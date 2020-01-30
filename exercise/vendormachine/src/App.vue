@@ -1,59 +1,93 @@
 <template>
-  <div id="app">
-    <!-- header -->
-    <header>
-      <!-- Navbar -->
-      <nav class="navbar navbar-light bg-dark">
-        <a class="navbar-brand" href="#">
-          <img src="https://img1.thaipng.com/20171220/gze/twitter-logo-png-5a3a1851372e76.0876249315137567532269680.jpg"
-            width="30" height="30" alt="">
-        </a>
-      </nav>
-    </header>
-    <!-- /header -->
-    <!-- body -->
 
-    <body>
-      <!-- container 1  -->
-      {{info.data.data}}
-      <div class="A-container">
-        <img src="../src/images/Vendor.png" alt="img-main" style="max-width:30.8333333%">
-        <!-- container 1  -->
+  <body>
+
+    <!-- Navbar (sit on top) -->
+    <div class="w3-top">
+      <div class="w3-bar w3-xlarge w3-black w3-opacity w3-hover-opacity-off" id="myNavbar">
+        <a href="#" class="w3-bar-item w3-button">HOME</a> <button>Your Coins : {{resultValue}}</button>
+        <button>Your Price : {{this.price}}</button>
       </div>
-      <!--button-->
-      <div class="bt-1">
-        <button type="button" class="btn btns btn-xl btn-outline-warning">Coin 10 !</button>
-        <button type="button" class="btn btns btn-xl btn-outline-warning">Coin 5 !</button>
-        <button type="button" class="btn btns btn-xl btn-outline-warning">Coin 2 !</button>
-        <button type="button" class="btn btns btn-xl btn-outline-warning">Coin 1 !</button>
+    </div>
+
+    <!-- Header with image -->
+    <header class="bgimg" id="home" v-bind:style="{ backgroundImage: 'url(' + image + ')' }">
+      <div class="w3-display-middle w3-center">
+        <span class="w3-text-white w3-hide-small" style="font-size:100px">Vendor<br>Machine</span>
+        <span class="w3-text-white w3-hide-large w3-hide-medium" style="font-size:60px"><b>Vendor<br>Machine</b></span>
+        <p><a href="#coin" class="w3-button w3-xxlarge w3-black">Put the coins</a></p>
       </div>
-      <!--/button-->
-      <!--container 3-->
-      <div class="B-container">
-        <div class="card " v-for="(item,index) in info.data.data" :key="index" :src="item.image" style="max-height:50%">
-          <div class="sub-contanier">
-            <img class="card-img-top" :src="item.image" height="200px" width="50%">
-            <div class="card-body">
-              <h5 class="card-title">{{item.name}}</h5>
-              <p class="card-text">ราคา {{item.price}}</p>
-              <button class="btn btn-primary" :disabled="item.in_stock !==true">Buy</button>
-            </div>
+    </header>
+
+    <!-- Menu Container -->
+    <div class="w3-container w3-black w3-padding-64 w3-xxlarge" id="coin">
+      <div class="w3-content">
+        <div class="w3-row"><br>
+         <h1 class="w3-center w3-jumbo" style="margin-bottom:64px">Coins</h1>
+        <br>
+          <div class="w3-quarter">
+            <img src="https://f0.pngfuel.com/png/579/386/coin-gold-medal-material-coin-png-clip-art.png"  @click="buttInc('coin10')" alt="coin10" style="width:45%" class="w3-circle w3-hover-opacity">
+            <p>Coin10</p>
           </div>
+
+          <div class="w3-quarter">
+            <img src="https://f0.pngfuel.com/png/579/386/coin-gold-medal-material-coin-png-clip-art.png"  @click="buttInc('coin5')" alt="coin5" style="width:45%" class="w3-circle w3-hover-opacity">
+           
+            <p>Coin5</p>
+          </div>
+
+          <div class="w3-quarter">
+            <img src="https://f0.pngfuel.com/png/579/386/coin-gold-medal-material-coin-png-clip-art.png"  @click="buttInc('coin2')" alt="coin2" style="width:45%" class="w3-circle w3-hover-opacity">
+            
+            <p>Coin2</p>
+          </div>
+
+          <div class="w3-quarter">
+            <img src="https://f0.pngfuel.com/png/579/386/coin-gold-medal-material-coin-png-clip-art.png"  @click="buttInc('coin1')" alt="coin1" style="width:45%" class="w3-circle w3-hover-opacity">
+            
+            <p>Coin1</p>
+          </div>
+        <br>
         </div>
-      </div>
-      <!--container 3-->
-    </body>
-    <!-- /body -->
+       <div class="w3-content">
+  
+    <h1 class="w3-center w3-jumbo" style="margin-bottom:64px">THE MENU</h1>
+    <div class="w3-row w3-center w3-border w3-border-dark-grey">
+      <a href="javascript:void(0)" onclick="openMenu(event, 'Pizza');" id="myLink">
+        <div class="w3-col s4 tablink w3-padding-large w3-hover-red w3-red">Pizza</div>
+      </a>
+    </div>
+
+    <div id="Pizza" class="w3-container menu w3-padding-32 w3-white" style="display: block;" 
+      v-for="(item,index) in info.data.data" :key="index.id">
+      <h1><b>{{item.name}}</b> <button class="w3-right w3-tag w3-dark-grey w3-round" @click="getValue(item.price)" >Buy</button></h1>
+      <p class="w3-text-grey">Price : {{item.price}} Bath</p> <img :src="item.image" alt="coin1" style="width:30%" class="w3-circle w3-hover-opacity">
+      <hr>
+    </div><br>
+
   </div>
+      </div>
+
+    </div>
+    <footer class="w3-center w3-black w3-padding-48 w3-xxlarge">
+      <p>Powered by <a href="https://www.w3schools.com/w3css/default.asp" title="W3.CSS" target="_blank"
+          class="w3-hover-text-green">w3.css</a></p>
+    </footer>
+  </body>
+  <!-- Footer -->
 
 
 </template>
 
 <script>
-  import axios from 'axios';
+  import axios from 'axios'
   export default {
+    props: [
+
+    ],
     data() {
       return {
+        image: "https://www.cargill.com/image/1432076966914/hero-carborated-soft-drinks.jpg",
         info: [],
         i: 0,
         sum: 0,
@@ -61,156 +95,172 @@
         iResult5: 0,
         iResult2: 0,
         iResult1: 0,
-        price: 15.0,
+        price: 0.0,
         coin: {
           coin10: {
             Value: 10,
             CountCoin: 0,
-            CountValue: 0,
+            CountValue: 0
           },
           coin5: {
             Value: 5,
             CountCoin: 0,
-            CountValue: 0,
+            CountValue: 0
           },
           coin2: {
             Value: 2,
             CountCoin: 0,
-            CountValue: 0,
+            CountValue: 0
           },
           coin1: {
             Value: 1,
             CountCoin: 0,
-            CountValue: 0,
-          },
-        },
+            CountValue: 0
+          }
+        }
       }
     },
     computed: {
       resultValue() {
         return ((this.coin.coin10.CountValue + this.coin.coin5.CountValue) +
-          (this.coin.coin2.CountValue + this.coin.coin1.CountValue));
+          (this.coin.coin2.CountValue + this.coin.coin1.CountValue))
       },
       resultCoin: function () {
         return ((this.coin.coin10.CountCoin + this.coin.coin5.CountCoin) +
-          (this.coin.coin2.CountCoin + this.coin.coin1.CountCoin));
+          (this.coin.coin2.CountCoin + this.coin.coin1.CountCoin))
       },
       resultTotal: function () {
-        return this.resultValue - this.price;
-      },
+        return this.resultValue - this.price
+      }
     },
     mounted() {
-      axios //ดึงข้อมูล product จากลิ้ง
+      axios // ดึงข้อมูล product จากลิ้ง
         .get('https://www.mocky.io/v2/5c77c5b330000051009d64c9')
         .then(response => (this.info = response))
     },
     methods: {
-      buttInc(coins) { //เพิ่มเหรียญ จากปุ่ม
-        if (coins == 'coin10') {
-          this.coin.coin10.CountCoin += 1;
-          this.coin.coin10.CountValue += 10;
-        } else if (coins == 'coin5') {
-          this.coin.coin5.CountCoin += 1;
-          this.coin.coin5.CountValue += 5;
-        } else if (coins == 'coin2') {
-          this.coin.coin2.CountCoin += 1;
-          this.coin.coin2.CountValue += 2;
-        } else if (coins == 'coin1') {
-          this.coin.coin1.CountCoin += 1;
-          this.coin.coin1.CountValue += 1;
+      openMenu(evt, menuName) {
+        var i, x, tablinks;
+        x = document.getElementsByClassName("menu");
+        for (i = 0; i < x.length; i++) {
+          x[i].style.display = "none";
         }
-
+        tablinks = document.getElementsByClassName("tablink");
+        for (i = 0; i < x.length; i++) {
+          tablinks[i].className = tablinks[i].className.replace(" w3-red", "");
+        }
+        document.getElementById(menuName).style.display = "block";
+        evt.currentTarget.firstElementChild.className += " w3-red";
       },
-      getTheSelectedOne(number) {
-        // then number will be the number
-        this.console.log(number)
+      getValue(val) {
+        this.price = val;
+        this.buy();
       },
-      refund() { //ฟังชั่น ทอนเงิน
-        //ตรวจสอบว่าได้เลือกสินค้าหรือไม่และได้หยอดเหรียญหรือไม่ ----------
-        if (this.price > 0 && this.resultValue >= this.price) {
-          //ตรวจสอบว่ามีเหรียญ 10 หรือไม่ --------
+      buttInc(coins) { // เพิ่มเหรียญ จากปุ่ม
+        if (coins === 'coin10') {
+          this.coin.coin10.CountCoin += 1
+          this.coin.coin10.CountValue += 10
+        } else if (coins === 'coin5') {
+          this.coin.coin5.CountCoin += 1
+          this.coin.coin5.CountValue += 5
+        } else if (coins === 'coin2') {
+          this.coin.coin2.CountCoin += 1
+          this.coin.coin2.CountValue += 2
+        } else if (coins === 'coin1') {
+          this.coin.coin1.CountCoin += 1
+          this.coin.coin1.CountValue += 1
+        }
+      },
+      buy() { // ฟังชั่น ทอนเงิน
+        // ตรวจสอบว่าได้เลือกสินค้าหรือไม่และได้หยอดเหรียญหรือไม่ ----------
+        if (this.price > 0 && this.resultValue > 0) {
+          // ตรวจสอบว่ามีเหรียญ 10 หรือไม่ --------
           if (this.coin.coin10.CountCoin > 0) {
-            //loop ตามจำนวนเหรียญที่มีเพื่อเอาไปลบกับราคาสินค้า 
+            // loop ตามจำนวนเหรียญที่มีเพื่อเอาไปลบกับราคาสินค้า
             for (this.i = this.coin.coin10.CountCoin; this.i >= 0; this.i--) {
-              //ตรวจสอบว่า ก่อนลูป หรือ หลัง ลูป ยอดเงิน และเหรียญ ยังมีหรือไม่
+              // ตรวจสอบว่า ก่อนลูป หรือ หลัง ลูป ยอดเงิน และเหรียญ ยังมีหรือไม่
               if (this.price > 0 && this.coin.coin10.CountCoin > 0) {
-                //เอาราคาสินค้ามาลบกับเหรียญที่หักออกไป
-                this.price = this.price - 10;
-                this.coin.coin10.CountCoin -= 1;
+                // เอาราคาสินค้ามาลบกับเหรียญที่หักออกไป
+                this.price = this.price - 10
+                this.coin.coin10.CountCoin -= 1
               }
             }
-            //ตรวจสอบว่ามีเหรียญ 5 หรือไม่ --------
+            // ตรวจสอบว่ามีเหรียญ 5 หรือไม่ --------
             if (this.coin.coin5.CountCoin > 0) {
-              //loop ตามจำนวนเหรียญที่มีเพื่อเอาไปลบกับราคาสินค้า 
+              // loop ตามจำนวนเหรียญที่มีเพื่อเอาไปลบกับราคาสินค้า
               for (this.i = this.coin.coin5.CountCoin; this.i >= 0; this.i--) {
-                //ตรวจสอบว่า ก่อนลูป หรือ หลัง ลูป ยอดเงิน และเหรียญ ยังมีหรือไม่
+                // ตรวจสอบว่า ก่อนลูป หรือ หลัง ลูป ยอดเงิน และเหรียญ ยังมีหรือไม่
                 if (this.price > 0 && this.coin.coin5.CountCoin > 0) {
-                  //เอาราคาสินค้ามาลบกับเหรียญที่หักออกไป
-                  this.price = this.price - 5;
-                  this.coin.coin5.CountCoin -= 1;
-
+                  // เอาราคาสินค้ามาลบกับเหรียญที่หักออกไป
+                  this.price = this.price - 5
+                  this.coin.coin5.CountCoin -= 1
                 }
               }
             }
-            //ตรวจสอบว่ามีเหรียญ 2 หรือไม่ --------
+            // ตรวจสอบว่ามีเหรียญ 2 หรือไม่ --------
             if (this.coin.coin2.CountCoin > 0) {
-              //loop ตามจำนวนเหรียญที่มีเพื่อเอาไปลบกับราคาสินค้า 
+              // loop ตามจำนวนเหรียญที่มีเพื่อเอาไปลบกับราคาสินค้า
               for (this.i = this.coin.coin2.CountCoin; this.i >= 0; this.i--) {
-                //ตรวจสอบว่า ก่อนลูป หรือ หลัง ลูป ยอดเงิน และเหรียญ ยังมีหรือไม่
+                // ตรวจสอบว่า ก่อนลูป หรือ หลัง ลูป ยอดเงิน และเหรียญ ยังมีหรือไม่
                 if (this.price > 0 && this.coin.coin2.CountCoin > 0) {
-                  //เอาราคาสินค้ามาลบกับเหรียญที่หักออกไป
-                  this.price = this.price - 2;
-                  this.coin.coin5.CountCoin -= 1;
-
+                  // เอาราคาสินค้ามาลบกับเหรียญที่หักออกไป
+                  this.price = this.price - 2
+                  this.coin.coin5.CountCoin -= 1
                 }
               }
             }
-            //ตรวจสอบว่ามีเหรียญ 1 หรือไม่ --------
+            // ตรวจสอบว่ามีเหรียญ 1 หรือไม่ --------
             if (this.coin.coin1.CountCoin > 0) {
-              //loop ตามจำนวนเหรียญที่มีเพื่อเอาไปลบกับราคาสินค้า 
+              // loop ตามจำนวนเหรียญที่มีเพื่อเอาไปลบกับราคาสินค้า
               for (this.i = this.coin.coin1.CountCoin; this.i >= 0; this.i--) {
-                //ตรวจสอบว่า ก่อนลูป หรือ หลัง ลูป ยอดเงิน และเหรียญ ยังมีหรือไม่
+                // ตรวจสอบว่า ก่อนลูป หรือ หลัง ลูป ยอดเงิน และเหรียญ ยังมีหรือไม่
                 if (this.price > 0 && this.coin.coin1.CountCoin > 0) {
-                  //เอาราคาสินค้ามาลบกับเหรียญที่หักออกไป
-                  this.price = this.price - 1;
-                  this.coin.coin5.CountCoin -= 1;
-
+                  // เอราคาสินค้ามาลบกับเหรียญที่หักออกไป
+                  this.price = this.price - 1
+                  this.coin.coin5.CountCoin -= 1
                 }
               }
             }
           }
-        }
+        } if(this.price > 0 && this.resultValue === 0){
+          alert("หยอดตัง")
       }
+       
+        
+      
     }
+  }
   }
 </script>
 
 <style>
-  .A-container {
-    display: flex;
-    justify-content: center;
+  @import "https://www.w3schools.com/w3css/4/w3.css";
+  @import "https://fonts.googleapis.com/css?family=Amatic+SC";
+
+  body,
+  html {
+    height: 100%
   }
 
-  .btns {
-    display: flex;
-
+  body,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: "Amatic SC", sans-serif
   }
 
-  .B-container {
-    margin-top: 2rem;
+  .menu {
+    display: none
   }
 
-  .btn-xl {
-    padding: 18px 70px;
-    font-size: 16px;
-    border-radius: 102px;
-    margin: auto;
+  .bgimg {
+    min-height: 90%;
+    background-repeat: no-repeat;
+    background-size: cover;
   }
 
-  .card {
-    float: left;
-    max-width: 50%;
-  }
-
-  .card-img-top {}
+</style>
 </style>
