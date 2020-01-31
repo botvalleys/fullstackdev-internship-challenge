@@ -2,14 +2,7 @@
 
   <body>
     <!-- Navbar อยู่ด้านบนสุดเสมอ -->
-    <div class="w3-top">
-      <div class="w3-bar w3-xlarge w3-black w3-opacity w3-hover-opacity-off" id="myNavbar">
-        <a href="#" class="w3-bar-item w3-button">HOME</a> <button>Your Coins : {{resultValue}}</button>
-        <button>Your Price : {{this.price}}</button>
-        <button @click="resultValue()">Your new : {{this.price}}</button>
-        <button @click="calculated()">Your</button>
-      </div>
-    </div>
+    <MenuTop :SValue="resultValue" :SPrice="this.price" />
 
     <!-- เอาภาพมาเป็นพื้นหลัง -->
     <header class="bgimg" id="home" v-bind:style="{ backgroundImage: 'url(' + image + ')' }">
@@ -17,9 +10,9 @@
         <span class="w3-text-white w3-hide-small" style="font-size:100px">Vendor<br>Machine</span>
         <span class="w3-text-white w3-hide-large w3-hide-medium" style="font-size:60px"><b>Vendor<br>Machine</b></span>
         <p><a href="#coin" class="w3-button w3-xxlarge w3-black">Put the coins</a></p>
+        <p><button @click="submit()" class="w3-button w3-xxlarge w3-black">Put the coins</button></p>
       </div>
     </header>
-
     <!-- ส่วนของเหรียญ -->
     <div class="w3-container w3-black w3-padding-64 w3-xxlarge" id="coin">
       <div class="w3-content">
@@ -54,24 +47,20 @@
           </div>
           <br>
         </div>
+        <modals />
         <!--Menu -->
         <div class="w3-content">
 
           <h1 class="w3-center w3-jumbo" style="margin-bottom:64px">THE MENU</h1>
           <div class="w3-row w3-center w3-border w3-border-dark-grey">
-            <a href="javascript:void(0)" onclick="openMenu(event, 'Pizza');" id="myLink">
-              <div class="w3-col s4 tablink w3-padding-large w3-hover-red w3-red">Pizza</div>
-            </a>
+            <div class="w3-col s4 tablink w3-padding-large w3-hover-red w3-red">Soda</div>
           </div>
-
           <div id="Pizza" class="w3-container menu w3-pa  dding-32 w3-white" style="display: block;"
             v-for="(item,index) in info.data.data" :key="index.id">
             <h1><b>{{item.name}}</b>
               <button class="w3-right w3-tag w3-dark-grey w3-round"
                 :disabled="resultValue === 0 || resultValue < item.price || item.in_stock != true"
                 @click="getValue(item.price)">Buy</button></h1>
-                <button class="w3-right w3-tag w3-dark-grey w3-round"
-                @click="calculated()">Buy</button>
             <p class="w3-text-grey">Price : {{item.price}} Bath</p>
             <p class="w3-text-grey">in_stock : {{item.in_stock}} </p>
             <img :src="item.image" alt="coin1" style="width:30%" class="w3-circle w3-hover-opacity">
@@ -82,37 +71,37 @@
       </div>
 
     </div>
+    <b-button id="show-btn" @click="showModal">Open Modal</b-button>
+    <!-- Modal Here -->
+    <b-modal ref="my-modal" hide-footer title="Thank you for your service!">
+      <div class="d-block text-center">
+        
+      </div>
+      <b-button class="mt-3" variant="outline-danger" block @click="hideModal">Close Me</b-button>
+    </b-modal>
     <!-- Footer -->
-    <footer class="w3-center w3-black w3-padding-48 w3-xxlarge">
-      <p>Coding by <a href="https://www.facebook.com/Botvalleys" title="W3.CSS" target="_blank"
-          class="w3-hover-text-green">Pasit.tiwa</a></p>
-      <p>Thanks for template by <a href="https://www.w3schools.com/w3css/default.asp" title="W3.CSS" target="_blank"
-          class="w3-hover-text-green">w3.css</a></p>
-    </footer>
+    <Footer />
   </body>
+
 
 
 </template>
 
 <script>
+  import MenuTop from './components/MenuTop'
+  import Footer from './components/Footer'
   import axios from 'axios'
   export default {
-    props: [
-
-    ],
+    components: {
+      MenuTop,
+      Footer,
+    },
     data() {
       return {
-        image: "https://www.cargill.com/image/1432076966914/hero-carborated-soft-drinks.jpg",
         info: [],
         i: 0,
-        j: 0,
-        componentKey: 0,
-        sum: 0,
-        iprice:0,
-        iResult10: 0,
-        iResult5: 0,
-        iResult2: 0,
-        iResult1: 0,
+        image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTzNNgo3vK9TypLcxbPzoPABWy04vz9uarbY4fkvr3JTbu8nuVj',
+        iprice: 0,
         price: 0.0,
         coin: {
           coin10: {
@@ -150,8 +139,75 @@
         .then(response => (this.info = response))
     },
     methods: {
+      showModal() {
+        this.$refs['my-modal'].show()
+      },
+      hideModal() {
+        this.$refs['my-modal'].hide()
+      },
       getValue(val) {
         this.price = val;
+        this.calculated();
+      },
+      calculated() {
+        if (this.price > 0 && this.resultValue > 0) {
+          // ตรวจสอบว่ามีเหรียญ 10 หรือไม่ --------
+          if (this.coin.coin10.CountCoin > 0) {
+            // loop ตามจำนวนเหรียญที่มีเพื่อเอาไปลบกับราคาสินค้า
+            for (this.i = this.coin.coin10.CountCoin; this.i >= 0; this.i--) {
+              this.iprice = this.price / 10
+              // ตรวจสอบว่า ก่อนลูป หรือ หลัง ลูป ยอดเงิน และเหรียญ ยังมีหรือไม่
+              if (this.iprice >= 0 && this.coin.coin10.CountCoin>0) {
+                // เอาราคาสินค้ามาลบกับเหรียญที่หักออกไป
+                this.price = this.price - 10
+                this.coin.coin10.CountCoin -= 1
+              }
+            }
+          }
+            // ตรวจสอบว่ามีเหรียญ 5 หรือไม่ --------
+            if (this.coin.coin5.CountCoin > 0) {
+              // loop ตามจำนวนเหรียญที่มีเพื่อเอาไปลบกับราคาสินค้า
+              for (this.i = this.coin.coin5.CountCoin; this.i >= 0; this.i--) {
+                this.iprice = this.price / 5
+                // ตรวจสอบว่า ก่อนลูป หรือ หลัง ลูป ยอดเงิน และเหรียญ ยังมีหรือไม่
+                if (this.iprice >= 0 && this.coin.coin5.CountCoin>0) {
+                  // เอาราคาสินค้ามาลบกับเหรียญที่หักออกไป
+                  this.price = this.price - 5
+                  this.coin.coin5.CountCoin -= 1
+                }
+              }
+            }
+            // ตรวจสอบว่ามีเหรียญ 2 หรือไม่ --------
+            if (this.coin.coin2.CountCoin > 0) {
+              // loop ตามจำนวนเหรียญที่มีเพื่อเอาไปลบกับราคาสินค้า
+              for (this.i = this.coin.coin2.CountCoin; this.i >= 0; this.i--) {
+                this.iprice = this.price / 2
+                // ตรวจสอบว่า ก่อนลูป หรือ หลัง ลูป ยอดเงิน และเหรียญ ยังมีหรือไม่
+                if (this.iprice >= 0 && this.coin.coin2.CountCoin>0) {
+                  // เอาราคาสินค้ามาลบกับเหรียญที่หักออกไป
+                  this.price = this.price - 2
+                  this.coin.coin2.CountCoin -= 1
+                }
+              }
+            }
+            // ตรวจสอบว่ามีเหรียญ 1 หรือไม่ --------
+            if (this.coin.coin1.CountCoin > 0) {
+              // loop ตามจำนวนเหรียญที่มีเพื่อเอาไปลบกับราคาสินค้า
+              for (this.i = this.coin.coin1.CountCoin; this.i >= 0; this.i--) {
+                this.iprice = this.price / 1
+                // ตรวจสอบว่า ก่อนลูป หรือ หลัง ลูป ยอดเงิน และเหรียญ ยังมีหรือไม่
+                if (this.iprice >= 0 && this.coin.coin1.CountCoin>0) {
+                  // เอราคาสินค้ามาลบกับเหรียญที่หักออกไป
+                  this.price = this.price - 1
+                  this.coin.coin1.CountCoin -= 1
+                }
+              }
+            }
+          
+        }
+        if (this.price > 0 && this.resultValue === 0) {
+          alert("หยอดตัง")
+        }
       },
       buttInc(coins) { // เพิ่มเหรียญ จากปุ่ม
         if (coins === 'coin10') {
@@ -169,65 +225,6 @@
 
         }
       },
-      calculated() {
-       if (this.price > 0 && this.resultValue > 0) {
-          // ตรวจสอบว่ามีเหรียญ 10 หรือไม่ --------
-          if (this.coin.coin10.CountCoin > 0) {
-            // loop ตามจำนวนเหรียญที่มีเพื่อเอาไปลบกับราคาสินค้า
-            for (this.i = this.coin.coin10.CountCoin; this.i >= 0; this.i--) {
-               this.iprice = this.price - 10
-              // ตรวจสอบว่า ก่อนลูป หรือ หลัง ลูป ยอดเงิน และเหรียญ ยังมีหรือไม่
-              if (this.iprice >=  0) {
-                // เอาราคาสินค้ามาลบกับเหรียญที่หักออกไป
-                this.price = this.price - 10
-                this.coin.coin10.CountCoin -= 1
-              }
-            }
-            // ตรวจสอบว่ามีเหรียญ 5 หรือไม่ --------
-            if (this.coin.coin5.CountCoin > 0) {
-              // loop ตามจำนวนเหรียญที่มีเพื่อเอาไปลบกับราคาสินค้า
-              for (this.i = this.coin.coin5.CountCoin; this.i >= 0; this.i--) {
-                  this.iprice = this.price - 5
-                // ตรวจสอบว่า ก่อนลูป หรือ หลัง ลูป ยอดเงิน และเหรียญ ยังมีหรือไม่
-                if (this.iprice >= 0) {
-                  // เอาราคาสินค้ามาลบกับเหรียญที่หักออกไป
-                  this.price = this.price - 5
-                  this.coin.coin5.CountCoin -= 1
-                }
-              }  
-            }
-            // ตรวจสอบว่ามีเหรียญ 2 หรือไม่ --------
-            if (this.coin.coin2.CountCoin > 0) {
-              // loop ตามจำนวนเหรียญที่มีเพื่อเอาไปลบกับราคาสินค้า
-              for (this.i = this.coin.coin2.CountCoin; this.i >= 0; this.i--) {
-                this.iprice = this.price - 2
-                // ตรวจสอบว่า ก่อนลูป หรือ หลัง ลูป ยอดเงิน และเหรียญ ยังมีหรือไม่
-                if (this.iprice >= 0 ) {
-                  // เอาราคาสินค้ามาลบกับเหรียญที่หักออกไป
-                  this.price = this.price - 2
-                  this.coin.coin2.CountCoin -= 1
-                }
-              }
-            }
-            // ตรวจสอบว่ามีเหรียญ 1 หรือไม่ --------
-            if (this.coin.coin1.CountCoin > 0) {
-              // loop ตามจำนวนเหรียญที่มีเพื่อเอาไปลบกับราคาสินค้า
-              for (this.i = this.coin.coin1.CountCoin; this.i >= 0; this.i--) {
-                this.iprice = this.price - 1
-                // ตรวจสอบว่า ก่อนลูป หรือ หลัง ลูป ยอดเงิน และเหรียญ ยังมีหรือไม่
-                if (this.iprice >= 0) {
-                  // เอราคาสินค้ามาลบกับเหรียญที่หักออกไป
-                  this.price = this.price - 1
-                  this.coin.coin1.CountCoin -= 1
-                }
-              }
-            }
-          }
-            this.resultValue();
-        } if(this.price > 0 && this.resultValue === 0){
-          alert("หยอดตัง")
-      }
-    }
     }
   }
 
