@@ -175,8 +175,9 @@
           if (this.coin.coin10.CountCoin > 0) {
             // loop ตามจำนวนเหรียญที่มีเพื่อเอาไปลบกับราคาสินค้า
             for (this.i = this.coin.coin10.CountCoin; this.i >= 0; this.i--) {
+               this.iprice = this.price - 10
               // ตรวจสอบว่า ก่อนลูป หรือ หลัง ลูป ยอดเงิน และเหรียญ ยังมีหรือไม่
-              if (this.price-10 >0 ) {
+              if (this.iprice >=  0) {
                 // เอาราคาสินค้ามาลบกับเหรียญที่หักออกไป
                 this.price = this.price - 10
                 this.coin.coin10.CountCoin -= 1
@@ -188,7 +189,7 @@
               for (this.i = this.coin.coin5.CountCoin; this.i >= 0; this.i--) {
                   this.iprice = this.price - 5
                 // ตรวจสอบว่า ก่อนลูป หรือ หลัง ลูป ยอดเงิน และเหรียญ ยังมีหรือไม่
-                if (this.iprice >=0) {
+                if (this.iprice >= 0) {
                   // เอาราคาสินค้ามาลบกับเหรียญที่หักออกไป
                   this.price = this.price - 5
                   this.coin.coin5.CountCoin -= 1
@@ -201,10 +202,10 @@
               for (this.i = this.coin.coin2.CountCoin; this.i >= 0; this.i--) {
                 this.iprice = this.price - 2
                 // ตรวจสอบว่า ก่อนลูป หรือ หลัง ลูป ยอดเงิน และเหรียญ ยังมีหรือไม่
-                if (this.iprice >=0 ) {
+                if (this.iprice >= 0 ) {
                   // เอาราคาสินค้ามาลบกับเหรียญที่หักออกไป
                   this.price = this.price - 2
-                  this.coin.coin5.CountCoin -= 1
+                  this.coin.coin2.CountCoin -= 1
                 }
               }
             }
@@ -214,10 +215,10 @@
               for (this.i = this.coin.coin1.CountCoin; this.i >= 0; this.i--) {
                 this.iprice = this.price - 1
                 // ตรวจสอบว่า ก่อนลูป หรือ หลัง ลูป ยอดเงิน และเหรียญ ยังมีหรือไม่
-                if (this.iprice >=0) {
+                if (this.iprice >= 0) {
                   // เอราคาสินค้ามาลบกับเหรียญที่หักออกไป
                   this.price = this.price - 1
-                  this.coin.coin5.CountCoin -= 1
+                  this.coin.coin1.CountCoin -= 1
                 }
               }
             }
