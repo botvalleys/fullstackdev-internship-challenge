@@ -21,7 +21,7 @@
            <p>
              <a href="#coin" class="w3-button w3-xxlarge w3-black">Put the coins</a>
              <br>
-             <a class="w3-button w3-xxlarge w3-black">Would to Refund ?</a>
+             <button @click="ShowModal()" class="w3-button w3-xxlarge w3-black" :disabled="resultValue<=0">Need to Refund ? Click me !!</button>
            </p>
 
          </div>
@@ -62,7 +62,7 @@
              </div>
              <br>
              <div>
-               <!--ส้่่วนของ Modal มี 3 แบบ-->
+               <!--ส้่่วนของ Modal มี 2 แบบ-->
                <!-- แบบ 1 กรณี ทำรายการสำเร็จ-->
                <b-modal ref="my-modal" no-close-on-esc no-close-on-backdrop hide-header-close class="no-close-on-esc"
                  hide-footer title="thank you for your service">
@@ -78,40 +78,26 @@
                    <b-button class="mt-3" variant="outline-danger" block @click="reset()">Close Me</b-button>
                  </div>
                </b-modal>
-               <!-- แบบ 2 กรณี ไม่มีเงินทอนหรือไม่สามารถทอนได้-->
-               <b-modal ref="my-modal1" no-close-on-esc no-close-on-backdrop hide-header-close class="no-close-on-esc"
-                 hide-footer title="thank you for your service">
-                 <div class="d-block ">
-                   <h3>
-                     <li>No coins to Change</li>
-                     <li>Or no coins type to change</li>
-                   </h3>
-                   <b-button class="mt-3" variant="outline-danger" block @click="reset()">Close Me</b-button>
-                 </div>
-               </b-modal>
-               <!-- แบบ 3 กรณี refund-->
+               <!-- แบบ 2 กรณี refund-->
                <b-modal ref="my-modal2" no-close-on-esc no-close-on-backdrop hide-header-close class="no-close-on-esc"
                  hide-footer title="thank you for your service">
-                 <div class="d-block " v-for="item in coins" :key="item">
-                   <h3>
-                     <h2>Your Change</h2>
-                     <li>{{item}}</li>
+                 <div class="d-block ">
+                     <h2>Refunded</h2>
+                     <li v-for="item in coins" :key="item">{{item}}</li>
                      <li></li>
-                   </h3>
-                   <b-button class="mt-3" variant="outline-danger" block @click="reset()">Close Me</b-button>
                  </div>
+                 <b-button class="mt-3" variant="outline-danger" block @click="reset()">Close Me</b-button>
                </b-modal>
              </div>
            </div>
            <!--Menu -->
-
            <div class="w3-content">
              <h1 class="w3-center w3-jumbo" style="margin-bottom:64px">THE MENU</h1>
              <div class="w3-row w3-center w3-border w3-border-dark-grey">
                <div class="w3-col s4 tablink w3-padding-large w3-hover-red w3-red">Soda</div>
              </div>
              <div id="Soda" class="w3-container menu w3-pa  dding-32 w3-white" style="display: block;"
-               v-for="(item,index) in info.data.data" :key="index.id">
+               v-for="(item,index) in info.data.data" :key="index.id"> 
                <h1><b>{{item.name}}</b>
                  <button class="w3-right w3-tag w3-dark-grey w3-round"
                    :hidden="item.in_stock==false || resultValue<item.price"
@@ -144,18 +130,18 @@
        },
        data() {
          return {
-           info: [],
-           coins: [],
-           coinsValue: 0,
-           productSelect: null,
-           amount: 0,
+           info: [], // เอาไว้เก็บค่า จาก api
+           coins: [], // เก็บ Type ของเหรียญ
+           coinsValue: 0, // เก็บผลรวมของเหรียญ
+           productSelect: null, // เอาไว้เก็บ name ของ สินค้าที่เลือก
+           amount: 0, //ยอดเงินที่ต้องการจะทอน
            image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTzNNgo3vK9TypLcxbPzoPABWy04vz9uarbY4fkvr3JTbu8nuVj',
-           price: 0.0,
+           price: 0.0, // เอาไว้เก็บราคาสินค้า
          }
        },
        computed: {
          resultValue() {
-           return this.coinsValue
+           return this.coinsValue 
          }
        },
        mounted() {
@@ -165,50 +151,49 @@
 
        },
        methods: {
+         ShowModal(){
+            this.$refs['my-modal2'].show()
+         },
          //------- ฟังชั่น ให้ เป็น one click ------
          Run(price, name) {
            this.productSelect = name
            this.amount = this.coinsValue - price;
            this.coins = this.coins.sort((a, b) => a - b);
-           console.log(this.coins)
            this.minCoinsChange(this.coins, this.amount)
          },
          //--------  ฟังชั่นทอนเหรียญ ---------
-         minCoinsChange(coins, amount) {
-           const cache = []; // {1}
-           const makeChange = (value) => { // {2}
-             if (!value) { // {3}
+         minCoinsChange(coins, amount) { // ชื่อ ฟังชั่น และ parameter ที่รับเข้ามา
+           const makeChange = (value) => {  //ชื่อ ฟังชั่น และ parameter ที่รับเข้ามา
+             if (!value) {  // ถ้า ไม่มีค่า ส่ง [] ออกมา
                return [];
              }
-             if (cache[value]) { // {4}
-               return cache[value];
-             }
-             let min = [];
-             let newMin;
-             let newAmount;
-             for (let i = 0; i < coins.length; i++) { // {5}
-               const coin = coins[i];
-               newAmount = value - coin; // {6}
-               if (newAmount >= 0) {
-                 newMin = makeChange(newAmount); // {7}
+             let min = []; // ตัวแปรเก็บ Array เปล่า
+             let newMin; 
+             let iamount;
+             for (let i = 0; i < coins.length; i++) { // ลูป ถ้า i น้อยก็ จำนวน type ของ coins จะทำงาน  
+               const coin = coins[i]; // coin เก็บค่า Array ของ coins[i] i เริ่มจาก 0 แล้วสร้างไปเรื่อยๆ จนถึง จำนวนของ type coin หรือ ขนาด length array
+               iamount = value - coin;  // imount ให้เก็บ ผล จาก value - coin
+               if (iamount >= 0) {  // เช็ค ว่า iamount มากกว่า =  0 จริงไหม
+                 newMin = makeChange(iamount); // แล้วให้ newmin เก็บค่า iamount
                }
                if (
-                 newAmount >= 0 && // {8}
-                 (newMin.length < min.length - 1 || !min.length) && // {9}
-                 (newMin.length || !newAmount) // {10}
+                 iamount >= 0 &&  
+                 (newMin.length < min.length - 1 || !min.length) &&  
+                 (newMin.length || !iamount)  
                ) {
-                 min = [coin].concat(newMin); // {11}
-
+                 min = [coin].concat(newMin);  //ถ้าเป็นไปตาม เงื่อนไขด้านบนให้ min เก็บ array [][] 
                }
              }
-             return (cache[value] = min); // {12}
+             return [value] = min;  // ส่งค่า min ออก ไปในรูปของ array [value]
            };
-           console.log(makeChange(amount))
-           return makeChange(amount); // {13}
+           this.coins = makeChange(amount)
+           this.$refs['my-modal'].show()
+           return makeChange(amount) //
          },
          //-----------เพิ่มเหรียญ -----------------------------
          BtInc(coinType) {
            // เหรียญ 10
+           //หลักการทำงาน คือ กด แล้ว เพิ่มค่า และ push เข้า array
            if (coinType == 'coin10') {
              this.coinsValue += 10
              this.coins.push(10);
@@ -229,23 +214,21 @@
              this.coins.push(1);
            }
          },
-         //ฟังชั่น สำหรับการคืนค่าครับ (ผมมั่นใจว่ามีวิธีที่ดีกว่านี้)
+         //ฟังชั่น สำหรับการคืนค่าครับ 
          reset() {
-           //ส่วนของ ซ่อน Modal
+           //ส่วนของ ซ่อน Modal 
            if (!this.$refs['my-modal'].hide()) {
              this.$refs['my-modal'].hide()
-           } else if (!this.$refs['my-modal1'].hide()) {
-             this.$refs['my-modal1'].hide()
-           } else if (!this.$refs['my-modal2'].hide()) {
+           } 
+           if (!this.$refs['my-modal2'].hide()) {
              this.$refs['my-modal2'].hide()
            }
-           // ส่วนของ ตัวแปร
+           // ส่วนของ reset ค่าตัวแปร
            this.coins = []
            this.coinsValue = 0
            this.productSelect = null
            this.amount = 0
            this.price = 0.0
-
          }
        }
      }
