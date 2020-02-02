@@ -1,7 +1,3 @@
-   
-   
-   
-   
    <!-- Code นี้ เขียน โดย นายพสิษฐ์ ทิวารัตนอังกูร 
         ส่วนของ CSS ส่วนใหญ๋ นำมาจาก W3.CSS ครับ 
         ในส่วนของ Test case นะครับ เบื้องต้น ผ่านตาม ที่ Test case ต้องการครับ
@@ -179,33 +175,36 @@
          },
          //--------  ฟังชั่นทอนเหรียญ ---------
          minCoinsChange(coins, amount) {
-           var minChange = [
-             [0]
-           ];
-           if (coins.indexOf(amount) >= 0) {
-             return [amount];
-           }
-           for (var i = 1; i <= amount; i += 1) {
-             for (var j = 0; j < coins.length && coins[j] <= amount; j += 1) {
-               for (var k = 0; k < minChange.length; k += 1) {
-                 if (k + coins[j] === i) {
-                   if (minChange[k] != undefined) {
-                     minChange[i] = minChange[k].concat([coins[j]]);
-                   }
-                 }
+           const cache = []; // {1}
+           const makeChange = (value) => { // {2}
+             if (!value) { // {3}
+               return [];
+             }
+             if (cache[value]) { // {4}
+               return cache[value];
+             }
+             let min = [];
+             let newMin;
+             let newAmount;
+             for (let i = 0; i < coins.length; i++) { // {5}
+               const coin = coins[i];
+               newAmount = value - coin; // {6}
+               if (newAmount >= 0) {
+                 newMin = makeChange(newAmount); // {7}
+               }
+               if (
+                 newAmount >= 0 && // {8}
+                 (newMin.length < min.length - 1 || !min.length) && // {9}
+                 (newMin.length || !newAmount) // {10}
+               ) {
+                 min = [coin].concat(newMin); // {11}
+
                }
              }
-           }
-           var result = minChange[amount];
-           if (!result) {
-             this.coinsValue = this.amount
-             this.$refs['my-modal1'].show()
-           }else{
-             this.coins = result.slice(1)
-             console.log(this.coins)
-             this.$refs['my-modal'].show()
-           }
-           
+             return (cache[value] = min); // {12}
+           };
+           console.log(makeChange(amount))
+           return makeChange(amount); // {13}
          },
          //-----------เพิ่มเหรียญ -----------------------------
          BtInc(coinType) {
@@ -235,11 +234,9 @@
            //ส่วนของ ซ่อน Modal
            if (!this.$refs['my-modal'].hide()) {
              this.$refs['my-modal'].hide()
-           }
-           else if (!this.$refs['my-modal1'].hide()) {
+           } else if (!this.$refs['my-modal1'].hide()) {
              this.$refs['my-modal1'].hide()
-           }
-           else if (!this.$refs['my-modal2'].hide()) {
+           } else if (!this.$refs['my-modal2'].hide()) {
              this.$refs['my-modal2'].hide()
            }
            // ส่วนของ ตัวแปร
