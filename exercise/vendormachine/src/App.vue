@@ -26,7 +26,7 @@
 
          </div>
        </header>
-       <!-- ส่วนของเหรียญ -->
+       <!-- ส่วนของเหรียญ --->
        <div class="w3-container w3-black w3-padding-64 w3-xxlarge" id="coin">
          <div class="w3-content">
            <div class="w3-row"><br>
