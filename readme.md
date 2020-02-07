@@ -39,16 +39,4 @@ Product listing
 |-----|----------|--------|
 |Product listing|https://www.mocky.io/v2/5c77c5b330000051009d64c9|GET|
 
-Acceptance agreement
----
 
-1. Fork this github project.
-2. Open `issue` feature in your repository (Options > Features > Checked on Issues) [#Reference](https://softwareengineering.stackexchange.com/questions/179468/forking-a-repo-on-github-but-allowing-new-issues-on-the-fork)
-3. Put your code in `exercise` folder.
-4. Publish your project on hosting, cloud or something that we can play it :) (DigitalOcean, Firebase Hosting, Heroku)
-
-Any question?
----
-Open your issue from this link below
-
-https://github.com/igeargeek/fullstackdev-internship-challenge/issues
