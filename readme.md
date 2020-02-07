@@ -1,4 +1,4 @@
-I GEAR GEEK : Vending Machine Problem 
+Vending Machine Problem 
 ===
 
 Please follow these conditions before code!
